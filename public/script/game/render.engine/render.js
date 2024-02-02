@@ -1,4 +1,5 @@
 // this is the main part of the render engine
+import Grid from "./grid.js";
 
 class RenderEngine {
   constructor() {
@@ -7,31 +8,53 @@ class RenderEngine {
 
     // initialize the canvas context for rendering processes
     this.canvas = this.canvasElement.getContext("2d");
+    // create thhe grid instance to be used in the render engine
+    this.grid = new Grid(
+      this.canvasElement.width,
+      this.canvasElement.height,
+      100,
+      100
+    );
+    this.canvas.lineWidth = 1;
+    // render the grid in the canvas
+    this.grid.render(this);
   }
 
-  render(engine) {
-    // clear the canvas
+  clear() {
     this.canvas.clearRect(
       0,
       0,
       this.canvasElement.width,
       this.canvasElement.height
     );
+  }
 
-    for (let i = 0; i < 1000; i++) {
-      // get random x and y positions
-      const x = Math.floor(Math.random() * this.canvasElement.width);
-      const y = Math.floor(Math.random() * this.canvasElement.height);
+  render(engine) {
+    this.clear(); // clear the canvas
 
-      // get random color
-      const r = Math.floor(Math.random() * 256);
-      const g = Math.floor(Math.random() * 256);
-      const b = Math.floor(Math.random() * 256);
-      // set the color of the rectangle
-      this.canvas.fillStyle = `rgb(${r}, ${g}, ${b})`;
-      // draw the rectangle
-      this.canvas.fillRect(x, y, 1, 1);
-    }
+    // render the grid
+    this.grid.render(this);
+  }
+
+  // function to render single point in the canvas
+  drawPoint(point) {
+    // set the color of the point
+    this.canvas.fillStyle = point.color;
+    // draw the point
+    const { cell_x, cell_y, cell_width, cell_height } =
+      this.grid.getCellCoordinates(point.x, point.y);
+    // draw the point on the canvas
+    this.canvas.fillRect(cell_x, cell_y, cell_width, cell_height);
+  }
+
+  drawRawLine(x1, y1, x2, y2, strokeColor = "white") {
+    this.canvas.strokeStyle = strokeColor;
+    // start to the draw the line
+    this.canvas.beginPath();
+    // move to the starting point
+    this.canvas.moveTo(x1, y1);
+    this.canvas.lineTo(x2, y2); // draw the line
+    this.canvas.stroke(); // finish the drawing
   }
 }
 
