@@ -1,4 +1,6 @@
 export default class Object {
+  static ruleSet;
+
   constructor(x, y) {
     this.X = x;
     this.Y = y;

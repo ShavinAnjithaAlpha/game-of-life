@@ -2,6 +2,7 @@
 import Grid from "./grid.js";
 
 class RenderEngine {
+  // constructor for the render engine
   constructor() {
     // get the canvas from the DOM
     this.canvasElement = document.getElementById("canvas");
@@ -12,14 +13,15 @@ class RenderEngine {
     this.grid = new Grid(
       this.canvasElement.width,
       this.canvasElement.height,
-      100,
-      100
+      20,
+      20
     );
     this.canvas.lineWidth = 1;
     // render the grid in the canvas
     this.grid.render(this);
   }
 
+  // clear the canvas
   clear() {
     this.canvas.clearRect(
       0,
@@ -29,6 +31,7 @@ class RenderEngine {
     );
   }
 
+  // render the game model on the screen using render methods
   render(engine) {
     this.clear(); // clear the canvas
 
@@ -37,7 +40,7 @@ class RenderEngine {
   }
 
   // function to render single point in the canvas
-  drawPoint(point) {
+  drawRawPoint(point) {
     // set the color of the point
     this.canvas.fillStyle = point.color;
     // draw the point
@@ -47,6 +50,7 @@ class RenderEngine {
     this.canvas.fillRect(cell_x, cell_y, cell_width, cell_height);
   }
 
+  // function to draw a line in the canvas
   drawRawLine(x1, y1, x2, y2, strokeColor = "white") {
     this.canvas.strokeStyle = strokeColor;
     // start to the draw the line
