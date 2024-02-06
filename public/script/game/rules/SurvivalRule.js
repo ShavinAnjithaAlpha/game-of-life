@@ -29,15 +29,8 @@ export default class SurvivalRule extends Rule {
       }
     }
 
-    if (aliveCount === 2 || aliveCount === 3) {
-      // make a deep copy of the baseObject
-      const updatedObject = new Cell(baseObject.X, baseObject.Y);
-      // change the state of the object
-      updatedObject.isAlive = true;
-      // get the index of the object in the model
-      const index = gameModel.getIndex(baseObject);
-      // add to the model's trasition model
-      gameModel.addTransitionObject({ index: index, object: updatedObject });
+    if ((aliveCount === 2 || aliveCount === 3) && baseObject.isAlive) {
+      // nothing happens stay alive
     }
   }
 }

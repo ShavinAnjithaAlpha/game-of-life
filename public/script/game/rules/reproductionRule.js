@@ -29,7 +29,7 @@ export default class ReproductionRule extends Rule {
       }
     }
 
-    if (aliveCount === 3) {
+    if (aliveCount === 3 && !baseObject.isAlive) {
       // make a deep copy of the baseObject
       const updatedObject = new Cell(baseObject.X, baseObject.Y);
       // change the state of the object

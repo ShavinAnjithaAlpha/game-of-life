@@ -1,17 +1,38 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      canvas {
+        display: block;
+        margin: 0;
+      }
+
+      .canvas-container::-webkit-scrollbar {
+        display: none;
+      }
+    </style>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Game of Life</title>
   </head>
   <body>
-    <canvas
-      id="canvas"
-      width="1500"
-      height="700"
-      style="background-color: black"
-    ></canvas>
+    <div
+      style="width: 100vw; height: 90vh; overflow: auto; scrollbar-width: 0"
+      class="canvas-container"
+    >
+      <canvas
+        id="canvas"
+        width="2000"
+        height="2000"
+        style="background-color: black"
+      ></canvas>
+    </div>
 
     <script type="module" src="script/game/game.js"></script>
   </body>

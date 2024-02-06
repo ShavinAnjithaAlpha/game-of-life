@@ -13,8 +13,8 @@ class RenderEngine {
     this.grid = new Grid(
       this.canvasElement.width,
       this.canvasElement.height,
-      20,
-      20
+      50,
+      50
     );
     this.canvas.lineWidth = 1;
     // render the grid in the canvas

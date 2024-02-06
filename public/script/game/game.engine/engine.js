@@ -7,14 +7,32 @@ class Engine {
     this.gameObjects = []; // array of objects to be rendered
     this.trasitionGameObjects = []; // array of objects to be rendered in the next frame by removing old objects and adding new objects
 
-    // TODO: remove this
-    for (let i = 0; i < 200; i++) {
-      const cell = new Cell(
-        Math.floor(Math.random() * 20),
-        Math.floor(Math.random() * 20)
-      );
-      this.gameObjects.push(cell);
+    for (let i = 0; i < 50; i++) {
+      for (let j = 0; j < 50; j++) {
+        const cell = new Cell(i, j);
+        cell.isAlive = false;
+        this.gameObjects.push(cell);
+      }
     }
+
+    // replace the cell with live state
+    this.gameObjects[200].isAlive = true;
+    this.gameObjects[201].isAlive = true;
+    this.gameObjects[202].isAlive = true;
+    this.gameObjects[252].isAlive = true;
+    this.gameObjects[151].isAlive = true;
+
+    this.gameObjects[300].isAlive = true;
+    this.gameObjects[301].isAlive = true;
+    this.gameObjects[302].isAlive = true;
+    this.gameObjects[352].isAlive = true;
+    this.gameObjects[251].isAlive = true;
+
+    this.gameObjects[500].isAlive = true;
+    // this.gameObjects[501].isAlive = true;
+    this.gameObjects[502].isAlive = true;
+    // this.gameObjects[552].isAlive = true;
+    this.gameObjects[451].isAlive = true;
   }
 
   // update the state of the game model by applying the rules on each objects in the model
@@ -40,6 +58,7 @@ class Engine {
   run() {
     setInterval(() => {
       this.renderObjects();
+      // this.grid.render(this.renderEngine);
       this.evolve();
     }, 100);
   }
@@ -68,6 +87,8 @@ class Engine {
     const x = baseObject.X;
     const y = baseObject.Y;
 
+    let count = 0;
+
     const relativeObjects = [];
     for (let i = 0; i < relatives.length; i++) {
       // calculate the relative x and y accordig to base object
@@ -77,11 +98,11 @@ class Engine {
         (gameObject) =>
           gameObject.X === relativePoint.x && gameObject.Y === relativePoint.y
       );
-
+      if (gameObject) count++;
       relativeObjects.push(gameObject);
     }
 
-    // console.log(relativeObjects);
+    // console.log(count);
     return relativeObjects;
   }
 

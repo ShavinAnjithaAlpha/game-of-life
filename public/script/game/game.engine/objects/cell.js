@@ -17,7 +17,7 @@ export default class Cell extends Organism {
   constructor(x, y) {
     super(x, y);
     this.isAlive = true;
-    this.color = "yellow";
+    this.color = "lightgreen";
   }
 
   applyRules(gameModel) {
@@ -28,7 +28,7 @@ export default class Cell extends Organism {
     if (this.isAlive) {
       renderEngine.drawRawPoint({ x: this.X, y: this.Y, color: this.color });
     } else {
-      renderEngine.drawRawPoint({ x: this.X, y: this.Y, color: "red" });
+      renderEngine.drawRawPoint({ x: this.X, y: this.Y, color: "black" });
     }
   }
 }
