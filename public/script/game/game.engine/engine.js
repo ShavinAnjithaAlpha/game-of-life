@@ -6,6 +6,7 @@ class Engine {
     this.renderEngine = renderEngine; // render engine to be used for rendering the game
     this.gameObjects = []; // array of objects to be rendered
     this.trasitionGameObjects = []; // array of objects to be rendered in the next frame by removing old objects and adding new objects
+    this.running = true; // flag to check if the game is running
 
     for (let i = 0; i < 50; i++) {
       for (let j = 0; j < 50; j++) {
@@ -56,10 +57,12 @@ class Engine {
 
   // main event loop of the game engine
   run() {
-    setInterval(() => {
+    let intervalId = setInterval(() => {
       this.renderObjects();
       // this.grid.render(this.renderEngine);
       this.evolve();
+
+      if (!this.running) clearInterval(intervalId);
     }, 100);
   }
 
