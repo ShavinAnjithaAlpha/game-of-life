@@ -17,6 +17,8 @@
         display: none;
       }
     </style>
+
+    <link rel="stylesheet" href="style/style.css" />
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Game of Life</title>
@@ -32,6 +34,19 @@
         height="2000"
         style="background-color: black"
       ></canvas>
+    </div>
+    <div class="controlbox">
+      <button id="play">Play</button>
+      <button id="pause">Pause</button>
+      <button id="clear">Clear</button>
+      <button id="random">Random</button>
+      <button id="speed">Speed</button>
+      <input type="range" id="speedRange" min="10" max="5000" value="30" />
+      <label for="speedRange" id="speedLabel">30</label>
+
+      <!-- x and y cell corrdinates labels -->
+      <div id="x"></div>
+      <div id="y"></div>
     </div>
 
     <script type="module" src="script/game/game.js"></script>

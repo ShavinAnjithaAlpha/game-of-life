@@ -1,0 +1,37 @@
+.controlbox {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 10px;
+}
+
+.controlbox button {
+  margin: 0 5px;
+  padding: 5px 10px;
+  border: none;
+  background-color: dodgerblue;
+  color: white;
+  font-size: 16px;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.controlbox button:hover {
+  background-color: #4caf50;
+}
+
+.controlbox input {
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}
+
+.controlbox #x,
+.controlbox #y {
+  margin: 20px 5px;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  font-size: 16px;
+}

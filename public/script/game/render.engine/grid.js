@@ -29,7 +29,7 @@ export default class Grid {
     for (let i = 0; i <= this.horizontal_cell_number; i++) {
       const { cell_x, cell_y, cell_width, cell_height } =
         this.getCellCoordinates(i, 0);
-      renderEngine.drawRawLine(
+      renderEngine.drawLine(
         cell_x,
         cell_y,
         cell_x,
@@ -42,7 +42,7 @@ export default class Grid {
     for (let i = 0; i <= this.vertical_cell_number; i++) {
       const { cell_x, cell_y, cell_width, cell_height } =
         this.getCellCoordinates(0, i);
-      renderEngine.drawRawLine(
+      renderEngine.drawLine(
         cell_x,
         cell_y,
         cell_x + this.width,

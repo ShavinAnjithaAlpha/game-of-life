@@ -1,120 +1,213 @@
-import Relative from "../util/relative.js";
-import Cell from "./objects/cell.js";
+import GameModel from "../game.model/model.js";
 
-class Engine {
+export default class GameEngine {
   constructor(renderEngine) {
-    this.renderEngine = renderEngine; // render engine to be used for rendering the game
-    this.gameObjects = []; // array of objects to be rendered
-    this.trasitionGameObjects = []; // array of objects to be rendered in the next frame by removing old objects and adding new objects
-    this.running = true; // flag to check if the game is running
+    this.renderEngine = renderEngine;
+    this.gameModel = new GameModel(renderEngine.grid);
+    this.running = false;
+    this.gameSpeed = 30;
+    this.handleEvents();
 
-    for (let i = 0; i < 50; i++) {
-      for (let j = 0; j < 50; j++) {
-        const cell = new Cell(i, j);
-        cell.isAlive = false;
-        this.gameObjects.push(cell);
+    // initialize the game model
+    this.gameModel.addCell(26, 24);
+    this.gameModel.addCell(26, 26);
+    this.gameModel.addCell(25, 25);
+    this.gameModel.addCell(25, 26);
+    this.gameModel.addCell(27, 26);
+
+    this.gameModel.addCell(36, 34);
+    this.gameModel.addCell(36, 36);
+    this.gameModel.addCell(35, 35);
+    this.gameModel.addCell(35, 36);
+    this.gameModel.addCell(37, 36);
+
+    this.gameModel.addCell(46, 44);
+    this.gameModel.addCell(46, 46);
+    this.gameModel.addCell(46, 45);
+    this.gameModel.addCell(45, 45);
+    this.gameModel.addCell(47, 44);
+
+    this.gameModel.addCell(146, 144);
+    this.gameModel.addCell(146, 146);
+    this.gameModel.addCell(146, 145);
+    this.gameModel.addCell(145, 145);
+    this.gameModel.addCell(147, 144);
+
+    // render the objects
+    this.renderObjects();
+  }
+
+  evolve() {
+    // iterate through all the cell in the grid
+    const rows = this.renderEngine.grid.horizontal_cell_number;
+    const cols = this.renderEngine.grid.vertical_cell_number;
+
+    for (let i = 0; i < rows; i++) {
+      for (let j = 0; j < cols; j++) {
+        // get the number of neighbours of the cell
+        const neighbours = this.gameModel.getNumberOfNeighours(i, j);
+
+        // get the cell from the living cells
+        const cell = this.gameModel.get(i, j);
+
+        if (j === 131 && i === 192 && cell !== undefined) {
+          console.log("131, 192 nei: ", neighbours);
+        }
+
+        if (j === 131 && i === 192 && cell === undefined) {
+          console.log("131, 192 nei dead: ", neighbours);
+        }
+
+        // check if the cell is alive
+        if (cell !== undefined) {
+          // check if the cell has less than 2 neighbours
+          if (neighbours < 2) {
+            // remove the cell from the living cells
+            this.gameModel.removeCell(i, j);
+          }
+
+          // check if the cell has more than 3 neighbours
+          if (neighbours > 3) {
+            // remove the cell from the living cells
+            this.gameModel.removeCell(i, j);
+          }
+        } else {
+          // check if the cell has exactly 3 neighbours
+          if (neighbours === 3) {
+            // add the cell to the living cells
+            this.gameModel.addCell(i, j);
+          }
+        }
       }
     }
 
-    // replace the cell with live state
-    this.gameObjects[200].isAlive = true;
-    this.gameObjects[201].isAlive = true;
-    this.gameObjects[202].isAlive = true;
-    this.gameObjects[252].isAlive = true;
-    this.gameObjects[151].isAlive = true;
-
-    this.gameObjects[300].isAlive = true;
-    this.gameObjects[301].isAlive = true;
-    this.gameObjects[302].isAlive = true;
-    this.gameObjects[352].isAlive = true;
-    this.gameObjects[251].isAlive = true;
-
-    this.gameObjects[500].isAlive = true;
-    // this.gameObjects[501].isAlive = true;
-    this.gameObjects[502].isAlive = true;
-    // this.gameObjects[552].isAlive = true;
-    this.gameObjects[451].isAlive = true;
+    // render the objects
+    this.renderObjects();
   }
 
-  // update the state of the game model by applying the rules on each objects in the model
-  evolve() {
-    // apply the rules to the game model
-    this.gameObjects.forEach((gameObject) => {
-      gameObject.applyRules(this);
-    });
-
-    // replace the trasition objects to the game model
-    this.replaceTrasitionObjects();
-  }
-
-  // render the each object in the csreen using the render engine on top of the obejcts
   renderObjects() {
-    // render all the objects
-    this.gameObjects.forEach((gameObject) => {
-      gameObject.render(this.renderEngine);
+    // update the game model using the game model
+    this.gameModel.created_cells.forEach((cell) => {
+      this.renderEngine.drawRect(
+        cell.col * this.renderEngine.grid.cell_width,
+        cell.row * this.renderEngine.grid.cell_height,
+        this.renderEngine.grid.cell_width,
+        this.renderEngine.grid.cell_height,
+        "orange"
+      );
     });
-  }
 
+    this.gameModel.removed_cells.forEach((cell) => {
+      this.renderEngine.drawRect(
+        cell.col * this.renderEngine.grid.cell_width,
+        cell.row * this.renderEngine.grid.cell_height,
+        this.renderEngine.grid.cell_width,
+        this.renderEngine.grid.cell_height,
+        "black"
+      );
+    });
+
+    // render the grid
+    this.renderEngine.grid.render(this.renderEngine);
+    // update the game model
+    this.gameModel.updateModel();
+  }
   // main event loop of the game engine
   run() {
-    let intervalId = setInterval(() => {
-      this.renderObjects();
-      // this.grid.render(this.renderEngine);
+    this.intervalId = setInterval(() => {
+      if (!this.running) clearInterval(this.intervalId);
       this.evolve();
-
-      if (!this.running) clearInterval(intervalId);
-    }, 100);
+    }, this.gameSpeed);
   }
 
-  // util functions directly related to the game model
+  puase() {
+    this.running = false;
+  }
 
-  replaceTrasitionObjects() {
-    this.trasitionGameObjects.forEach((object) => {
-      // get the index of the game object to be replaced
-      const objectIndex = object.index;
-      // replace the object in the game model
-      this.gameObjects[objectIndex] = object.object;
+  play() {
+    this.running = true;
+    this.run();
+  }
+
+  handleEvents() {
+    document.getElementById("pause").addEventListener("click", () => {
+      this.puase();
     });
 
-    // clear the trasition game objects
-    this.trasitionGameObjects = [];
+    document.getElementById("play").addEventListener("click", () => {
+      this.play();
+    });
+
+    const speedLabel = document.getElementById("speedLabel");
+    document.getElementById("speedRange").addEventListener("change", (e) => {
+      // change the speed of the game
+      this.gameSpeed = e.target.value;
+      // update the speed label
+      speedLabel.innerText = e.target.value;
+      // clear the interval
+      clearInterval(this.intervalId);
+      // run the game
+      this.run();
+    });
+
+    document.getElementById("clear").addEventListener("click", () => {
+      // clear the interval
+      clearInterval(this.intervalId);
+      // clear the living cells
+      this.gameModel.reset();
+
+      // render the objects
+      this.renderEngine.resetCanvas();
+      this.puase();
+    });
+
+    document.getElementById("random").addEventListener("click", () => {
+      this.random();
+    });
+
+    const xLabel = document.getElementById("x");
+    const yLabel = document.getElementById("y");
+
+    const canvas = document.getElementById("canvas");
+    canvas.addEventListener("mousemove", (e) => {
+      const x = e.offsetX;
+      const y = e.offsetY;
+
+      const i = Math.floor(y / this.renderEngine.grid.cell_height);
+      const j = Math.floor(x / this.renderEngine.grid.cell_width);
+
+      xLabel.innerText = j;
+      yLabel.innerText = i;
+    });
   }
 
-  // function to add the trasiotion objects to the game model
-  addTransitionObject(object) {
-    this.trasitionGameObjects.push(object);
-  }
+  // function to randomly generate the living cells
+  random() {
+    // clear the interval
+    clearInterval(this.intervalId);
+    // clear the living cells
+    // this.gameModel.living_cells.clear();
 
-  // function for get the ralative game objects based on the given point
-  getRelativeGameObjects(baseObject, relatives) {
-    const x = baseObject.X;
-    const y = baseObject.Y;
+    // get the number of cells to be generated
+    const n = Math.floor(Math.random() * 100);
 
-    let count = 0;
+    const leftLimit = Math.floor(
+      Math.random() * this.renderEngine.grid.horizontal_cell_number
+    );
+    const topLimit = Math.floor(
+      Math.random() * this.renderEngine.grid.vertical_cell_number
+    );
 
-    const relativeObjects = [];
-    for (let i = 0; i < relatives.length; i++) {
-      // calculate the relative x and y accordig to base object
-      const relativePoint = relatives[i].getPoint({ x, y });
-      // find the game model if there is a object on that point
-      const gameObject = this.gameObjects.find(
-        (gameObject) =>
-          gameObject.X === relativePoint.x && gameObject.Y === relativePoint.y
-      );
-      if (gameObject) count++;
-      relativeObjects.push(gameObject);
+    // generate the cells
+    for (let i = 0; i < n; i++) {
+      const row = Math.floor(Math.random() * 20) + topLimit;
+      const col = Math.floor(Math.random() * 20) + leftLimit;
+
+      this.gameModel.addCell(row, col);
     }
 
-    // console.log(count);
-    return relativeObjects;
-  }
-
-  getIndex(gameObject) {
-    const index = this.gameObjects.findIndex(
-      (object) => object.X === gameObject.X && object.Y === gameObject.Y
-    );
-    return index;
+    this.renderEngine.resetCanvas();
+    // render the objects
+    this.renderObjects();
   }
 }
-
-export default Engine;

@@ -13,8 +13,8 @@ class RenderEngine {
     this.grid = new Grid(
       this.canvasElement.width,
       this.canvasElement.height,
-      50,
-      50
+      200,
+      200
     );
     this.canvas.lineWidth = 1;
     // render the grid in the canvas
@@ -39,19 +39,8 @@ class RenderEngine {
     this.grid.render(this);
   }
 
-  // function to render single point in the canvas
-  drawRawPoint(point) {
-    // set the color of the point
-    this.canvas.fillStyle = point.color;
-    // draw the point
-    const { cell_x, cell_y, cell_width, cell_height } =
-      this.grid.getCellCoordinates(point.x, point.y);
-    // draw the point on the canvas
-    this.canvas.fillRect(cell_x, cell_y, cell_width, cell_height);
-  }
-
   // function to draw a line in the canvas
-  drawRawLine(x1, y1, x2, y2, strokeColor = "white") {
+  drawLine(x1, y1, x2, y2, strokeColor = "white") {
     this.canvas.strokeStyle = strokeColor;
     // start to the draw the line
     this.canvas.beginPath();
@@ -59,6 +48,23 @@ class RenderEngine {
     this.canvas.moveTo(x1, y1);
     this.canvas.lineTo(x2, y2); // draw the line
     this.canvas.stroke(); // finish the drawing
+  }
+
+  drawRect(x, y, width, height, color) {
+    this.canvas.fillStyle = color;
+    this.canvas.fillRect(x, y, width, height);
+  }
+
+  resetCanvas() {
+    for (let i = 0; i < this.grid.horizontal_cell_number; i++) {
+      for (let j = 0; j < this.grid.vertical_cell_number; j++) {
+        const { cell_x, cell_y, cell_width, cell_height } =
+          this.grid.getCellCoordinates(i, j);
+        this.drawRect(cell_x, cell_y, cell_width, cell_height, "black");
+      }
+    }
+
+    this.grid.render(this);
   }
 }
 
