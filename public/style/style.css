@@ -1,37 +1,93 @@
-.controlbox {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body {
+  font-family: "Roboto", sans-serif;
+  background-color: #f4f4f4;
+}
+
+.panel {
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin-bottom: 10px;
+  width: 100%;
+  padding: 20px;
 }
 
-.controlbox button {
-  margin: 0 5px;
-  padding: 5px 10px;
-  border: none;
-  background-color: dodgerblue;
+.control-panel {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+}
+
+.control-panel button {
+  margin: 0 10px;
+  padding: 10px 15px;
+  background-color: rgb(16, 81, 145);
   color: white;
-  font-size: 16px;
+  font-weight: 500;
+  font-size: 1rem;
+  border: none;
   border-radius: 5px;
   cursor: pointer;
+  transition: 0.3 all ease;
 }
 
-.controlbox button:hover {
-  background-color: #4caf50;
+.control-panel button:hover {
+  background-color: #113c67;
 }
 
-.controlbox input {
-  padding: 5px 10px;
+.control-panel label {
+  margin: 0 10px;
+  font-size: 1.2rem;
+}
+
+.control-panel input {
+  padding: 5px;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 16px;
 }
 
-.controlbox #x,
-.controlbox #y {
-  margin: 20px 5px;
-  padding: 5px 10px;
+/* stat panel styling */
+.stat-panel {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-start;
+  align-items: center;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.stat-panel #x,
+.stat-panel #y {
+  margin: 0 10px;
+  padding: 10px 15px;
+  font-weight: 700;
   border: 1px solid #ccc;
   border-radius: 5px;
-  font-size: 16px;
+}
+.stat-panel .gen-stat {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 0 10px 0 50px;
+  padding: 10px 15px;
+}
+
+.stat-panel .gen-stat span {
+  margin: 0 10px;
+  font-size: 1.2rem;
+}
+
+.stat-panel .gen-stat .label {
+  font-weight: 700;
+  margin: 0 10px;
+  font-size: 1.2rem;
 }

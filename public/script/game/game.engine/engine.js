@@ -5,9 +5,14 @@ export default class GameEngine {
     this.renderEngine = renderEngine;
     this.gameModel = new GameModel(renderEngine.grid);
     this.running = false;
+    this.is_grid = true;
+    this.is_mousedown = false;
     this.gameSpeed = 30;
     this.handleEvents();
+    this.initialize();
+  }
 
+  initialize() {
     // initialize the game model
     this.gameModel.addCell(26, 24);
     this.gameModel.addCell(26, 26);
@@ -49,14 +54,6 @@ export default class GameEngine {
 
         // get the cell from the living cells
         const cell = this.gameModel.get(i, j);
-
-        if (j === 131 && i === 192 && cell !== undefined) {
-          console.log("131, 192 nei: ", neighbours);
-        }
-
-        if (j === 131 && i === 192 && cell === undefined) {
-          console.log("131, 192 nei dead: ", neighbours);
-        }
 
         // check if the cell is alive
         if (cell !== undefined) {
@@ -107,10 +104,13 @@ export default class GameEngine {
       );
     });
 
-    // render the grid
-    this.renderEngine.grid.render(this.renderEngine);
+    if (this.is_grid) {
+      // render the grid
+      this.renderEngine.grid.render(this.renderEngine);
+    }
     // update the game model
     this.gameModel.updateModel();
+    this.updateStats();
   }
   // main event loop of the game engine
   run() {
@@ -122,11 +122,17 @@ export default class GameEngine {
 
   puase() {
     this.running = false;
+    clearInterval(this.intervalId);
   }
 
   play() {
     this.running = true;
     this.run();
+  }
+
+  step() {
+    // evolve one step at a time
+    this.evolve();
   }
 
   handleEvents() {
@@ -136,6 +142,12 @@ export default class GameEngine {
 
     document.getElementById("play").addEventListener("click", () => {
       this.play();
+    });
+
+    document.getElementById("step").addEventListener("click", () => {
+      if (!this.running) {
+        this.step();
+      }
     });
 
     const speedLabel = document.getElementById("speedLabel");
@@ -150,6 +162,10 @@ export default class GameEngine {
       this.run();
     });
 
+    document.getElementById("zoom").addEventListener("change", (e) => {
+      this.zoom(e.target.value / 10);
+    });
+
     document.getElementById("clear").addEventListener("click", () => {
       // clear the interval
       clearInterval(this.intervalId);
@@ -157,7 +173,7 @@ export default class GameEngine {
       this.gameModel.reset();
 
       // render the objects
-      this.renderEngine.resetCanvas();
+      this.renderEngine.resetCanvas(this.is_grid);
       this.puase();
     });
 
@@ -167,6 +183,7 @@ export default class GameEngine {
 
     const xLabel = document.getElementById("x");
     const yLabel = document.getElementById("y");
+    const state = document.getElementById("state");
 
     const canvas = document.getElementById("canvas");
     canvas.addEventListener("mousemove", (e) => {
@@ -178,7 +195,63 @@ export default class GameEngine {
 
       xLabel.innerText = j;
       yLabel.innerText = i;
+
+      // decide whether the cell is living or not
+      const cell = this.gameModel.get(i, j);
+      if (cell === undefined) {
+        state.innerText = "Dead";
+      } else {
+        state.innerText = "Alive";
+      }
     });
+
+    const getInput = document.getElementById("getInput");
+    canvas.addEventListener("click", (e) => {
+      if (getInput.checked) {
+        const x = e.offsetX;
+        const y = e.offsetY;
+
+        const i = Math.floor(y / this.renderEngine.grid.cell_height);
+        const j = Math.floor(x / this.renderEngine.grid.cell_width);
+
+        this.gameModel.addCell(i, j);
+        this.renderObjects();
+      }
+    });
+
+    canvas.addEventListener("mousedown", (e) => {
+      this.is_mousedown = true;
+    });
+
+    canvas.addEventListener("mouseup", (e) => {
+      this.is_mousedown = false;
+    });
+
+    canvas.addEventListener("mousemove", (e) => {
+      if (this.is_mousedown && getInput.checked) {
+        const x = e.offsetX;
+        const y = e.offsetY;
+
+        const i = Math.floor(y / this.renderEngine.grid.cell_height);
+        const j = Math.floor(x / this.renderEngine.grid.cell_width);
+
+        this.gameModel.addCell(i, j);
+        this.renderObjects();
+      }
+    });
+
+    const gridInput = document.getElementById("grid");
+    gridInput.addEventListener("change", (e) => {
+      this.is_grid = e.target.checked;
+      this.renderEngine.resetCanvas(this.is_grid);
+      this.renderObjects();
+    });
+  }
+
+  zoom(value) {
+    this.renderEngine.grid.zoom(value);
+    this.renderEngine.resetCanvas(this.is_grid);
+    this.renderObjects();
   }
 
   // function to randomly generate the living cells
@@ -186,7 +259,7 @@ export default class GameEngine {
     // clear the interval
     clearInterval(this.intervalId);
     // clear the living cells
-    // this.gameModel.living_cells.clear();
+    this.gameModel.living_cells.clear();
 
     // get the number of cells to be generated
     const n = Math.floor(Math.random() * 100);
@@ -206,8 +279,18 @@ export default class GameEngine {
       this.gameModel.addCell(row, col);
     }
 
-    this.renderEngine.resetCanvas();
+    this.renderEngine.resetCanvas(this.is_grid);
     // render the objects
     this.renderObjects();
+  }
+
+  updateStats() {
+    const genLabel = document.getElementById("generation");
+    const livingLabel = document.getElementById("livingCells");
+    const deadCells = document.getElementById("deadCells");
+
+    genLabel.innerText = this.gameModel.generation();
+    livingLabel.innerText = this.gameModel.population();
+    deadCells.innerText = this.gameModel.deadPopulation();
   }
 }

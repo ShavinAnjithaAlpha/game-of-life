@@ -23,6 +23,19 @@ export default class Grid {
     };
   }
 
+  zoom(value) {
+    // change the vertical and horizontal cell numbers based on the zoom value as a percentage
+    this.vertical_cell_number = Math.floor(this.vertical_cell_number * value);
+
+    this.horizontal_cell_number = Math.floor(
+      this.horizontal_cell_number * value
+    );
+
+    // calculate the size of the cell
+    this.cell_width = this.width / this.horizontal_cell_number;
+    this.cell_height = this.height / this.vertical_cell_number;
+  }
+
   // function to render the grid
   render(renderEngine) {
     // draw the vertical lines
@@ -34,7 +47,7 @@ export default class Grid {
         cell_y,
         cell_x,
         cell_y + this.height,
-        "rgb(50, 50, 50)"
+        "rgb(20, 20, 20)"
       );
     }
 
@@ -50,5 +63,12 @@ export default class Grid {
         "rgb(50, 50, 50)"
       );
     }
+  }
+
+  size() {
+    return {
+      x_cells: this.horizontal_cell_number,
+      y_cells: this.vertical_cell_number,
+    };
   }
 }

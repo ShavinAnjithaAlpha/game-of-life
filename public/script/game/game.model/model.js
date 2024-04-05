@@ -6,6 +6,7 @@ export default class GameModel {
     this.removed_cells = []; // track the removed cells of the game of life
     this.created_cells = []; // track the created cells of the game of life
     this.grid = grid;
+    this.generation = 0;
   }
 
   // function to add a cell to the living cells
@@ -16,9 +17,6 @@ export default class GameModel {
   // function to remove a cell from the living cells
   removeCell(row, col) {
     this.removed_cells.push({ row, col });
-    if (row === 192 && col === 131) {
-      console.log("131, 192 added to removed cells");
-    }
   }
 
   // function to update the game model
@@ -36,6 +34,8 @@ export default class GameModel {
     // clear the created and removed cells
     this.created_cells = [];
     this.removed_cells = [];
+    // increment the generation
+    this.generation++;
   }
 
   get(i, j) {
@@ -78,9 +78,44 @@ export default class GameModel {
     return this.living_cells.get(row, col);
   }
 
+  // function to redraw the entire grid in the canvas thriugh render engine
+  renderModel(renderEngine) {
+    // first fill the canvas with black color
+    renderEngine.drawRect(0, 0, this.grid.width, this.grid.height, "black");
+    // then redraw the grid in the canvas
+    this.grid.render(renderEngine);
+    // redraw the living cells in the canvas
+    for (let i = 0; i < this.living_cells.base_length; i++) {
+      this.living_cells.getRow().forEach((cell) => {
+        renderEngine.drawRect(
+          cell.col * renderEngine.grid.cell_width,
+          cell.row * renderEngine.grid.cell_height,
+          renderEngine.grid.cell_width,
+          renderEngine.grid.cell_height,
+          "orange"
+        );
+      });
+    }
+  }
+
   reset() {
     this.living_cells.clear();
     this.removed_cells = [];
     this.created_cells = [];
+  }
+
+  generation() {
+    return this.generation;
+  }
+
+  population() {
+    return this.living_cells.size();
+  }
+
+  deadPopulation() {
+    return (
+      this.grid.horizontal_cell_number * this.grid.vertical_cell_number -
+      this.living_cells.size()
+    );
   }
 }

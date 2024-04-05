@@ -55,7 +55,7 @@ class RenderEngine {
     this.canvas.fillRect(x, y, width, height);
   }
 
-  resetCanvas() {
+  resetCanvas(is_grid = true) {
     for (let i = 0; i < this.grid.horizontal_cell_number; i++) {
       for (let j = 0; j < this.grid.vertical_cell_number; j++) {
         const { cell_x, cell_y, cell_width, cell_height } =
@@ -64,7 +64,7 @@ class RenderEngine {
       }
     }
 
-    this.grid.render(this);
+    if (is_grid) this.grid.render(this);
   }
 }
 

@@ -2,6 +2,7 @@ export default class HashList {
   constructor(base_length = 100) {
     this.base_length = base_length;
     this.hash_list = new Array(base_length);
+    this.size = 0;
 
     // initialize the hash list with appending list to each index
     for (let i = 0; i < base_length; i++) {
@@ -17,6 +18,7 @@ export default class HashList {
   add(i, j, element) {
     const hash = this.hash(i, j);
     this.hash_list[hash].push(element);
+    this.size++;
   }
 
   // function to remove an element from the hash list
@@ -25,6 +27,10 @@ export default class HashList {
     this.hash_list[hash] = this.hash_list[hash].filter(
       (el) => el.row !== i && el.col !== j
     );
+
+    if (this.hash_list[hash].find((el) => el.row === i && el.col === j)) {
+      this.size--;
+    }
   }
 
   // function to get the elements in the hash list
@@ -40,10 +46,19 @@ export default class HashList {
     return this.hash_list.flat();
   }
 
+  getRow(row) {
+    return this.hash_list[row];
+  }
+
   // clear the hahs list
   clear() {
     for (let i = 0; i < this.base_length; i++) {
       this.hash_list[i] = [];
     }
+    this.size = 0;
+  }
+
+  size() {
+    return this.size;
   }
 }
