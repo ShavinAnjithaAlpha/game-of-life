@@ -20,7 +20,7 @@ export default class GameModel {
   }
 
   // function to update the game model
-  updateModel() {
+  updateModel(status = "evolve") {
     // remove the cells from the living cells
     this.removed_cells.forEach((cell) => {
       this.living_cells.remove(cell.row, cell.col);
@@ -34,8 +34,10 @@ export default class GameModel {
     // clear the created and removed cells
     this.created_cells = [];
     this.removed_cells = [];
-    // increment the generation
-    this.generation++;
+    if (status === "evolve") {
+      // increment the generation
+      this.generation++;
+    }
   }
 
   get(i, j) {
@@ -102,20 +104,21 @@ export default class GameModel {
     this.living_cells.clear();
     this.removed_cells = [];
     this.created_cells = [];
+    this.generation = 0;
   }
 
-  generation() {
+  getGeneration() {
     return this.generation;
   }
 
-  population() {
-    return this.living_cells.size();
+  getPopulation() {
+    return this.living_cells.getSize();
   }
 
-  deadPopulation() {
+  getDeadPopulation() {
     return (
       this.grid.horizontal_cell_number * this.grid.vertical_cell_number -
-      this.living_cells.size()
+      this.living_cells.getSize()
     );
   }
 }

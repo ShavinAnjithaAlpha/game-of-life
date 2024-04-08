@@ -5,6 +5,9 @@ export default class Grid {
     this.vertical_cell_number = vertical_cell_number;
     this.horizontal_cell_number = horizontal_cell_number;
 
+    this.base_X = this.vertical_cell_number;
+    this.base_Y = this.horizontal_cell_number;
+
     // calculate the size of the cell
     this.cell_width = this.width / this.horizontal_cell_number;
     this.cell_height = this.height / this.vertical_cell_number;
@@ -25,11 +28,9 @@ export default class Grid {
 
   zoom(value) {
     // change the vertical and horizontal cell numbers based on the zoom value as a percentage
-    this.vertical_cell_number = Math.floor(this.vertical_cell_number * value);
+    this.vertical_cell_number = Math.floor(this.base_Y * value);
 
-    this.horizontal_cell_number = Math.floor(
-      this.horizontal_cell_number * value
-    );
+    this.horizontal_cell_number = Math.floor(this.base_X * value);
 
     // calculate the size of the cell
     this.cell_width = this.width / this.horizontal_cell_number;

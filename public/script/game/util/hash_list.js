@@ -28,9 +28,7 @@ export default class HashList {
       (el) => el.row !== i && el.col !== j
     );
 
-    if (this.hash_list[hash].find((el) => el.row === i && el.col === j)) {
-      this.size--;
-    }
+    this.size--;
   }
 
   // function to get the elements in the hash list
@@ -58,7 +56,7 @@ export default class HashList {
     this.size = 0;
   }
 
-  size() {
+  getSize() {
     return this.size;
   }
 }

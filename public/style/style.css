@@ -26,6 +26,16 @@ body {
   width: 100%;
 }
 
+.control-panel .btn-bar {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  padding: 10px 10px;
+  border: 1px solid #00000055;
+  border-radius: 5px;
+}
+
 .control-panel button {
   margin: 0 10px;
   padding: 10px 15px;
@@ -61,7 +71,10 @@ body {
   justify-content: flex-start;
   align-items: center;
   width: 100%;
-  margin-top: 20px;
+  margin-top: 10px;
+  padding: 10px;
+  border: 1px solid #00000022;
+  border-radius: 5px;
 }
 
 .stat-panel #x,

@@ -39,7 +39,7 @@ export default class GameEngine {
     this.gameModel.addCell(147, 144);
 
     // render the objects
-    this.renderObjects();
+    this.renderObjects("adding");
   }
 
   evolve() {
@@ -82,7 +82,7 @@ export default class GameEngine {
     this.renderObjects();
   }
 
-  renderObjects() {
+  renderObjects(status = "evolve") {
     // update the game model using the game model
     this.gameModel.created_cells.forEach((cell) => {
       this.renderEngine.drawRect(
@@ -109,7 +109,7 @@ export default class GameEngine {
       this.renderEngine.grid.render(this.renderEngine);
     }
     // update the game model
-    this.gameModel.updateModel();
+    this.gameModel.updateModel(status);
     this.updateStats();
   }
   // main event loop of the game engine
@@ -121,11 +121,15 @@ export default class GameEngine {
   }
 
   puase() {
+    if (!this.running) return;
+    // else pause the game
     this.running = false;
     clearInterval(this.intervalId);
   }
 
   play() {
+    if (this.running) return;
+    // else run the game
     this.running = true;
     this.run();
   }
@@ -171,6 +175,7 @@ export default class GameEngine {
       clearInterval(this.intervalId);
       // clear the living cells
       this.gameModel.reset();
+      this.updateStats();
 
       // render the objects
       this.renderEngine.resetCanvas(this.is_grid);
@@ -181,6 +186,18 @@ export default class GameEngine {
       this.random();
     });
 
+    const gridInput = document.getElementById("grid");
+    gridInput.addEventListener("change", (e) => {
+      this.is_grid = e.target.checked;
+      this.renderEngine.resetCanvas(this.is_grid);
+      this.renderObjects("adding");
+    });
+
+    // handle the canvas events
+    this.handleCanvasEvents();
+  }
+
+  handleCanvasEvents() {
     const xLabel = document.getElementById("x");
     const yLabel = document.getElementById("y");
     const state = document.getElementById("state");
@@ -206,16 +223,20 @@ export default class GameEngine {
     });
 
     const getInput = document.getElementById("getInput");
+    const eraser = document.getElementById("eraser");
+    getInput.addEventListener("change", (e) => {
+      if (eraser.checked) eraser.checked = false;
+    });
+    eraser.addEventListener("change", () => {
+      // change the get input check box values to the opposite
+      if (getInput.checked) getInput.checked = false;
+    });
+
     canvas.addEventListener("click", (e) => {
       if (getInput.checked) {
-        const x = e.offsetX;
-        const y = e.offsetY;
-
-        const i = Math.floor(y / this.renderEngine.grid.cell_height);
-        const j = Math.floor(x / this.renderEngine.grid.cell_width);
-
-        this.gameModel.addCell(i, j);
-        this.renderObjects();
+        this.addCell(e);
+      } else if (eraser.checked) {
+        this.erase(e);
       }
     });
 
@@ -229,23 +250,42 @@ export default class GameEngine {
 
     canvas.addEventListener("mousemove", (e) => {
       if (this.is_mousedown && getInput.checked) {
-        const x = e.offsetX;
-        const y = e.offsetY;
-
-        const i = Math.floor(y / this.renderEngine.grid.cell_height);
-        const j = Math.floor(x / this.renderEngine.grid.cell_width);
-
-        this.gameModel.addCell(i, j);
-        this.renderObjects();
+        this.addCell(e);
+      } else if (this.is_mousedown && eraser.checked) {
+        this.erase(e);
       }
     });
+  }
 
-    const gridInput = document.getElementById("grid");
-    gridInput.addEventListener("change", (e) => {
-      this.is_grid = e.target.checked;
-      this.renderEngine.resetCanvas(this.is_grid);
-      this.renderObjects();
-    });
+  addCell(e) {
+    const x = e.offsetX;
+    const y = e.offsetY;
+
+    const i = Math.floor(y / this.renderEngine.grid.cell_height);
+    const j = Math.floor(x / this.renderEngine.grid.cell_width);
+
+    if (this.gameModel.get(i, j) !== undefined) return; // return if the cell is already living
+
+    this.gameModel.addCell(i, j); // add the cell to the living cells of the game model
+    this.renderObjects("adding"); // render the newly added cell on the canvas
+    this.updateStats(); // update the status of the game
+  }
+
+  erase(e) {
+    const x = e.offsetX;
+    const y = e.offsetY;
+
+    const i = Math.floor(y / this.renderEngine.grid.cell_height);
+    const j = Math.floor(x / this.renderEngine.grid.cell_width);
+
+    // check whether the cell is living
+    const cell = this.gameModel.get(i, j);
+    if (cell === undefined) return; // return if the cell is not living
+
+    // then remove the cell from the game model
+    this.gameModel.removeCell(i, j);
+    this.renderObjects("removing"); // render the removed cell on the canvas
+    this.updateStats(); // update the status of the game
   }
 
   zoom(value) {
@@ -260,6 +300,7 @@ export default class GameEngine {
     clearInterval(this.intervalId);
     // clear the living cells
     this.gameModel.living_cells.clear();
+    this.gameModel.generation = 0; // reste the geneation to 0
 
     // get the number of cells to be generated
     const n = Math.floor(Math.random() * 100);
@@ -279,9 +320,9 @@ export default class GameEngine {
       this.gameModel.addCell(row, col);
     }
 
-    this.renderEngine.resetCanvas(this.is_grid);
-    // render the objects
-    this.renderObjects();
+    this.renderEngine.resetCanvas(this.is_grid); // render the grid on the canvas
+    this.renderObjects("adding"); // render object on the canvas
+    this.updateStats(); // update the status of the game
   }
 
   updateStats() {
@@ -289,8 +330,8 @@ export default class GameEngine {
     const livingLabel = document.getElementById("livingCells");
     const deadCells = document.getElementById("deadCells");
 
-    genLabel.innerText = this.gameModel.generation();
-    livingLabel.innerText = this.gameModel.population();
-    deadCells.innerText = this.gameModel.deadPopulation();
+    genLabel.innerText = `${this.gameModel.getGeneration()}`;
+    livingLabel.innerText = `${this.gameModel.getPopulation()}`;
+    deadCells.innerText = `${this.gameModel.getDeadPopulation()}`;
   }
 }

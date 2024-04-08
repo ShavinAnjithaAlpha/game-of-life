@@ -43,11 +43,14 @@
     </div>
     <div class="panel">
       <div class="control-panel">
-        <button id="play">Play</button>
-        <button id="pause">Pause</button>
-        <button id="step">Step</button>
-        <button id="clear">Clear</button>
-        <button id="random">Random</button>
+        <div class="btn-bar">
+          <button id="play">Play</button>
+          <button id="pause">Pause</button>
+          <button id="step">Step</button>
+          <button id="clear">Clear</button>
+          <button id="random">Random</button>
+        </div>
+
         <label for="speedRange">Speed</label>
         <input type="range" id="speedRange" min="10" max="5000" value="30" />
         <label for="speedRange" id="speedLabel">30</label>
@@ -60,6 +63,9 @@
         <!-- check box for get the input from the canvas -->
         <input type="checkbox" id="getInput" />
         <label for="getInput">Get Input</label>
+        <!-- // check box for eraser -->
+        <input type="checkbox" id="eraser" />
+        <label for="erase">Erase</label>
       </div>
 
       <div class="stat-panel">
