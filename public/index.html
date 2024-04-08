@@ -27,6 +27,17 @@
       href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
       rel="stylesheet"
     />
+
+    <!-- Include CodeMirror CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/codemirror.min.css"
+    />
+    <!-- Include CodeMirror JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/codemirror.min.js"></script>
+    <!-- Include additional mode (optional) -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.63.0/mode/javascript/javascript.min.js"></script>
+
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
     <title>Game of Life</title>
@@ -38,12 +49,9 @@
       <label for="pattern">Choose Pattern</label>
       <select id="pattern">
         <option value="none">None</option>
-        <option value="glider">Glider</option>
-        <option value="spaceship">Spaceship</option>
-        <option value="pulsar">Pulsar</option>
-        <option value="gliderGun">Gosper Glider Gun</option>
-        <option value="infinite">Infinite Growth</option>
       </select>
+      <!-- add new pattern  -->
+      <button id="addPattern">Add Pattern</button>
     </div>
     <div
       style="width: 100vw; height: 75vh; overflow: auto; scrollbar-width: 0"
@@ -124,6 +132,14 @@
         display: none;
       "
     ></canvas>
+
+    <div class="pattern-editor">
+      <textarea id="code" rows="20" cols="80"></textarea>
+      <div class="btn-bar">
+        <button id="editor-save">Save</button>
+        <button id="editor-cancel">Cancel</button>
+      </div>
+    </div>
 
     <script type="module" src="script/game/game.js"></script>
   </body>

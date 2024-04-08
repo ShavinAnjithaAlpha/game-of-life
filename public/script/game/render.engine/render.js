@@ -50,9 +50,26 @@ class RenderEngine {
     this.canvas.stroke(); // finish the drawing
   }
 
+  drawVerticalFullLine(x, color) {
+    this.drawLine(x, 0, x, this.canvasElement.height, color);
+  }
+
+  drawHorizontalFullLine(y, color) {
+    this.drawLine(0, y, this.canvasElement.width, y, color);
+  }
+
   drawRect(x, y, width, height, color) {
     this.canvas.fillStyle = color;
     this.canvas.fillRect(x, y, width, height);
+  }
+
+  drawBorderRect(x, y, width, height, color) {
+    this.canvas.strokeStyle = color;
+    this.canvas.strokeRect(x, y, width, height);
+  }
+
+  clearRect(x, y, width, height) {
+    this.canvas.clearRect(x, y, width, height);
   }
 
   resetCanvas(is_grid = true) {
