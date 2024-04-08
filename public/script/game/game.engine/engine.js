@@ -7,9 +7,11 @@ export default class GameEngine {
     this.running = false;
     this.is_grid = true;
     this.is_mousedown = false;
-    this.gameSpeed = 30;
+    this.is_plot = false;
+    this.gameSpeed = 50;
     this.handleEvents();
     this.initialize();
+    this.initializePlot();
   }
 
   initialize() {
@@ -40,6 +42,48 @@ export default class GameEngine {
 
     // render the objects
     this.renderObjects("adding");
+  }
+
+  initializePlot() {
+    // create the plot
+    this.plot = new Chart(document.getElementById("plot"), {
+      type: "line",
+      data: {
+        labels: [],
+        datasets: [
+          {
+            label: "Population",
+            data: [],
+            borderColor: "rgb(255, 99, 132)",
+            fill: false,
+            pointRadius: 0,
+          },
+          {
+            label: "Toggled Births",
+            data: [],
+            borderColor: "rgb(0, 255, 0)",
+            fill: false,
+            pointRadius: 0,
+          },
+          {
+            label: "Toggled Deaths",
+            data: [],
+            borderColor: "rgb(0, 0, 255)",
+            fill: false,
+            pointRadius: 0,
+          },
+        ],
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        scales: {
+          y: {
+            beginAtZero: true,
+          },
+        },
+      },
+    });
   }
 
   evolve() {
@@ -116,7 +160,9 @@ export default class GameEngine {
   run() {
     this.intervalId = setInterval(() => {
       if (!this.running) clearInterval(this.intervalId);
-      this.evolve();
+      // update the game
+      this.evolve(); // evolve the game
+      this.addPlotData(); // add data to the plot
     }, this.gameSpeed);
   }
 
@@ -137,6 +183,7 @@ export default class GameEngine {
   step() {
     // evolve one step at a time
     this.evolve();
+    this.addPlotData();
   }
 
   handleEvents() {
@@ -157,24 +204,25 @@ export default class GameEngine {
     const speedLabel = document.getElementById("speedLabel");
     document.getElementById("speedRange").addEventListener("change", (e) => {
       // change the speed of the game
-      this.gameSpeed = e.target.value;
+      this.gameSpeed = e.target.value * 10;
       // update the speed label
-      speedLabel.innerText = e.target.value;
+      speedLabel.innerText = `x${e.target.value}`;
       // clear the interval
       clearInterval(this.intervalId);
       // run the game
       this.run();
     });
 
-    document.getElementById("zoom").addEventListener("change", (e) => {
-      this.zoom(e.target.value / 10);
-    });
+    document.getElementById("zoom").oninput = (e) => {
+      this.zoom(1 - e.target.value / 10);
+    };
 
     document.getElementById("clear").addEventListener("click", () => {
       // clear the interval
       clearInterval(this.intervalId);
       // clear the living cells
       this.gameModel.reset();
+      this.resetPlot(); // reset the plot
       this.updateStats();
 
       // render the objects
@@ -191,6 +239,17 @@ export default class GameEngine {
       this.is_grid = e.target.checked;
       this.renderEngine.resetCanvas(this.is_grid);
       this.renderObjects("adding");
+    });
+
+    const graphCheckBox = document.getElementById("graph-checkbox");
+    graphCheckBox.addEventListener("change", (e) => {
+      if (e.target.checked) {
+        document.getElementById("plot").style.display = "block";
+        this.is_plot = true;
+      } else {
+        document.getElementById("plot").style.display = "none";
+        this.is_plot = false;
+      }
     });
 
     // handle the canvas events
@@ -333,5 +392,26 @@ export default class GameEngine {
     genLabel.innerText = `${this.gameModel.getGeneration()}`;
     livingLabel.innerText = `${this.gameModel.getPopulation()}`;
     deadCells.innerText = `${this.gameModel.getDeadPopulation()}`;
+  }
+
+  // Function to add new data to the chart
+  addPlotData() {
+    if (this.is_plot === false) return; // return if the plot is not enabled
+
+    if (this.gameModel.getPopulation() % 10 === 0) {
+      this.plot.data.labels.push(this.gameModel.getGeneration()); // add the generation data as the label
+      this.plot.data.datasets[0].data.push(this.gameModel.getPopulation()); // add the population data
+      this.plot.data.datasets[1].data.push(this.gameModel.getToggledBirths()); // add the toggled births data
+      this.plot.data.datasets[2].data.push(this.gameModel.getToggledDeaths()); // add the toggled deaths data
+      this.plot.update();
+    }
+  }
+
+  resetPlot() {
+    this.plot.data.labels = [];
+    this.plot.data.datasets.forEach((dataset) => {
+      dataset.data = [];
+    });
+    this.plot.update();
   }
 }

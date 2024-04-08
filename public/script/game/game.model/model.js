@@ -7,6 +7,8 @@ export default class GameModel {
     this.created_cells = []; // track the created cells of the game of life
     this.grid = grid;
     this.generation = 0;
+    this.toggled_births = 0;
+    this.toggled_deaths = 0;
   }
 
   // function to add a cell to the living cells
@@ -31,6 +33,9 @@ export default class GameModel {
       this.living_cells.add(cell.row, cell.col, cell);
     });
 
+    // update the toggled births and deaths
+    this.toggled_births = this.created_cells.length;
+    this.toggled_deaths = this.removed_cells.length;
     // clear the created and removed cells
     this.created_cells = [];
     this.removed_cells = [];
@@ -120,5 +125,13 @@ export default class GameModel {
       this.grid.horizontal_cell_number * this.grid.vertical_cell_number -
       this.living_cells.getSize()
     );
+  }
+
+  getToggledBirths() {
+    return this.toggled_births;
+  }
+
+  getToggledDeaths() {
+    return this.toggled_deaths;
   }
 }
