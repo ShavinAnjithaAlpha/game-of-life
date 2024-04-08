@@ -8,10 +8,17 @@ export default class GameEngine {
     this.is_grid = true;
     this.is_mousedown = false;
     this.is_plot = false;
+    this.pattern_selected = null;
     this.gameSpeed = 50;
+    // color values of the game of life
+    this.liveCellColor = "orange";
+    this.deadCellColor = "black";
+
     this.handleEvents();
     this.initialize();
     this.initializePlot();
+
+    this.prevHightlightedCell = null;
   }
 
   initialize() {
@@ -33,12 +40,6 @@ export default class GameEngine {
     this.gameModel.addCell(46, 45);
     this.gameModel.addCell(45, 45);
     this.gameModel.addCell(47, 44);
-
-    this.gameModel.addCell(146, 144);
-    this.gameModel.addCell(146, 146);
-    this.gameModel.addCell(146, 145);
-    this.gameModel.addCell(145, 145);
-    this.gameModel.addCell(147, 144);
 
     // render the objects
     this.renderObjects("adding");
@@ -134,7 +135,7 @@ export default class GameEngine {
         cell.row * this.renderEngine.grid.cell_height,
         this.renderEngine.grid.cell_width,
         this.renderEngine.grid.cell_height,
-        "orange"
+        this.liveCellColor
       );
     });
 
@@ -144,7 +145,7 @@ export default class GameEngine {
         cell.row * this.renderEngine.grid.cell_height,
         this.renderEngine.grid.cell_width,
         this.renderEngine.grid.cell_height,
-        "black"
+        this.deadCellColor
       );
     });
 
@@ -204,7 +205,7 @@ export default class GameEngine {
     const speedLabel = document.getElementById("speedLabel");
     document.getElementById("speedRange").addEventListener("change", (e) => {
       // change the speed of the game
-      this.gameSpeed = e.target.value * 10;
+      this.gameSpeed = (10 - e.target.value) * 10;
       // update the speed label
       speedLabel.innerText = `x${e.target.value}`;
       // clear the interval
@@ -213,9 +214,9 @@ export default class GameEngine {
       this.run();
     });
 
-    document.getElementById("zoom").oninput = (e) => {
-      this.zoom(1 - e.target.value / 10);
-    };
+    // document.getElementById("zoom").oninput = (e) => {
+    //   this.zoom(1 - e.target.value / 10);
+    // };
 
     document.getElementById("clear").addEventListener("click", () => {
       // clear the interval
@@ -226,7 +227,7 @@ export default class GameEngine {
       this.updateStats();
 
       // render the objects
-      this.renderEngine.resetCanvas(this.is_grid);
+      this.renderEngine.resetCanvas(this.is_grid, this.deadCellColor);
       this.puase();
     });
 
@@ -237,7 +238,7 @@ export default class GameEngine {
     const gridInput = document.getElementById("grid");
     gridInput.addEventListener("change", (e) => {
       this.is_grid = e.target.checked;
-      this.renderEngine.resetCanvas(this.is_grid);
+      this.renderEngine.resetCanvas(this.is_grid, this.deadCellColor);
       this.renderObjects("adding");
     });
 
@@ -251,6 +252,24 @@ export default class GameEngine {
         this.is_plot = false;
       }
     });
+
+    // handle the pattern selection box
+    const patternSelect = document.getElementById("pattern");
+    patternSelect.addEventListener("change", (e) => {
+      // add the selected pattern to the grid
+      this.addSelectedPattern(e.target.value);
+    });
+
+    // set the color picker events
+    document.getElementById("cell-color").addEventListener("change", (e) => {
+      this.liveCellColor = e.target.value;
+      // redraw the objects
+      this.gameModel.renderModel(this.renderEngine, this.liveCellColor);
+    });
+
+    // document.getElementById("dead-color").addEventListener("change", (e) => {
+    //   this.deadCellColor = e.target.value;
+    // });
 
     // handle the canvas events
     this.handleCanvasEvents();
@@ -279,6 +298,10 @@ export default class GameEngine {
       } else {
         state.innerText = "Alive";
       }
+
+      if (this.pattern_selected !== null) {
+        this.showCurrentCellHighlighted(e);
+      }
     });
 
     const getInput = document.getElementById("getInput");
@@ -292,6 +315,12 @@ export default class GameEngine {
     });
 
     canvas.addEventListener("click", (e) => {
+      if (this.pattern_selected !== null) {
+        // add thr selected pattern to the grid with appropriate offsets
+        this.addPatternWithOffset(e);
+        return;
+      }
+
       if (getInput.checked) {
         this.addCell(e);
       } else if (eraser.checked) {
@@ -349,7 +378,7 @@ export default class GameEngine {
 
   zoom(value) {
     this.renderEngine.grid.zoom(value);
-    this.renderEngine.resetCanvas(this.is_grid);
+    this.renderEngine.resetCanvas(this.is_grid, this.deadCellColor);
     this.renderObjects();
   }
 
@@ -379,7 +408,7 @@ export default class GameEngine {
       this.gameModel.addCell(row, col);
     }
 
-    this.renderEngine.resetCanvas(this.is_grid); // render the grid on the canvas
+    this.renderEngine.resetCanvas(this.is_grid, this.deadCellColor); // render the grid on the canvas
     this.renderObjects("adding"); // render object on the canvas
     this.updateStats(); // update the status of the game
   }
@@ -413,5 +442,77 @@ export default class GameEngine {
       dataset.data = [];
     });
     this.plot.update();
+  }
+
+  addSelectedPattern(pattern) {
+    // read the pattern from the pattern file
+    fetch("/script/game/data/patterns.json")
+      .then((response) => response.json())
+      .then((data) => {
+        // read the pattern with the selected name
+        const selectedPattern = data.find((p) => p.name === pattern);
+        if (selectedPattern === undefined) return;
+
+        // now read the cell values from the pattern
+        this.pattern_selected = selectedPattern.cells;
+      })
+      .catch((error) => console.log(error));
+  }
+
+  addPatternWithOffset(e) {
+    // determine the cell to be added
+    const x = e.offsetX;
+    const y = e.offsetY;
+
+    // calculate the row and column of the cell
+    const i = Math.floor(y / this.renderEngine.grid.cell_height);
+    const j = Math.floor(x / this.renderEngine.grid.cell_width);
+
+    // get the pattern selected
+    this.pattern_selected.forEach((cell) => {
+      this.gameModel.addCell(cell[0] + i, cell[1] + j);
+    });
+
+    // render the objects
+    this.renderObjects("adding");
+
+    this.pattern_selected = null; // reset the pattern selected
+    this.prevHightlightedCell = null;
+  }
+
+  showCurrentCellHighlighted(e) {
+    // determine the cell to be added
+    const x = e.offsetX;
+    const y = e.offsetY;
+
+    // calculate the row and column of the cell
+    const row = Math.floor(y / this.renderEngine.grid.cell_height);
+    const col = Math.floor(x / this.renderEngine.grid.cell_width);
+
+    if (this.prevHightlightedCell) {
+      // erase the previous hightlighted cell
+
+      this.renderEngine.clearRect(
+        this.prevHightlightedCell.col * this.renderEngine.grid.cell_width,
+        this.prevHightlightedCell.row * this.renderEngine.grid.cell_height,
+        this.renderEngine.grid.cell_width,
+        this.renderEngine.grid.cell_height
+      );
+
+      // render the grid
+      if (this.is_grid) {
+        this.renderEngine.grid.render(this.renderEngine);
+      }
+    }
+
+    this.renderEngine.drawRect(
+      col * this.renderEngine.grid.cell_width,
+      row * this.renderEngine.grid.cell_height,
+      this.renderEngine.grid.cell_width,
+      this.renderEngine.grid.cell_height,
+      "limegreen"
+    );
+
+    this.prevHightlightedCell = { row, col };
   }
 }
