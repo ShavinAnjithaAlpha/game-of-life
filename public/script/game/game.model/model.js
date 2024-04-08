@@ -86,20 +86,20 @@ export default class GameModel {
   }
 
   // function to redraw the entire grid in the canvas thriugh render engine
-  renderModel(renderEngine) {
+  renderModel(renderEngine, color) {
     // first fill the canvas with black color
-    renderEngine.drawRect(0, 0, this.grid.width, this.grid.height, "black");
+    renderEngine.clearRect(0, 0, this.grid.width, this.grid.height);
     // then redraw the grid in the canvas
     this.grid.render(renderEngine);
     // redraw the living cells in the canvas
     for (let i = 0; i < this.living_cells.base_length; i++) {
-      this.living_cells.getRow().forEach((cell) => {
+      this.living_cells.getRow(i).forEach((cell) => {
         renderEngine.drawRect(
           cell.col * renderEngine.grid.cell_width,
           cell.row * renderEngine.grid.cell_height,
           renderEngine.grid.cell_width,
           renderEngine.grid.cell_height,
-          "orange"
+          color
         );
       });
     }

@@ -72,12 +72,12 @@ class RenderEngine {
     this.canvas.clearRect(x, y, width, height);
   }
 
-  resetCanvas(is_grid = true) {
+  resetCanvas(is_grid = true, color = "black") {
     for (let i = 0; i < this.grid.horizontal_cell_number; i++) {
       for (let j = 0; j < this.grid.vertical_cell_number; j++) {
         const { cell_x, cell_y, cell_width, cell_height } =
           this.grid.getCellCoordinates(i, j);
-        this.drawRect(cell_x, cell_y, cell_width, cell_height, "black");
+        this.drawRect(cell_x, cell_y, cell_width, cell_height, color);
       }
     }
 

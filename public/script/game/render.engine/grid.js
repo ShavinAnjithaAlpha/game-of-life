@@ -48,7 +48,7 @@ export default class Grid {
         cell_y,
         cell_x,
         cell_y + this.height,
-        "rgb(20, 20, 20)"
+        "rgb(40, 40, 40)"
       );
     }
 
@@ -61,7 +61,7 @@ export default class Grid {
         cell_y,
         cell_x + this.width,
         cell_y,
-        "rgb(50, 50, 50)"
+        "rgb(40, 40, 40)"
       );
     }
   }

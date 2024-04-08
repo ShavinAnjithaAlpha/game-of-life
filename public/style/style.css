@@ -71,6 +71,31 @@ html {
   background-color: #555;
 }
 
+.menu .color-box {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  margin: 0 10px;
+  padding: 5px 15px;
+  border: 1px solid #555;
+  border-radius: 5px;
+}
+
+.menu input[type="color"] {
+  padding: 0;
+  border: 1px solid #ccc;
+  background-color: #222;
+  color: white;
+  border-radius: 5px;
+  border: 1px solid #555;
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: 50px;
+  height: 25px;
+  margin: 0 10px;
+}
+
 .panel {
   display: flex;
   flex-direction: column;

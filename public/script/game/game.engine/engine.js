@@ -10,6 +10,10 @@ export default class GameEngine {
     this.is_plot = false;
     this.pattern_selected = null;
     this.gameSpeed = 50;
+    // color values of the game of life
+    this.liveCellColor = "orange";
+    this.deadCellColor = "black";
+
     this.handleEvents();
     this.initialize();
     this.initializePlot();
@@ -131,7 +135,7 @@ export default class GameEngine {
         cell.row * this.renderEngine.grid.cell_height,
         this.renderEngine.grid.cell_width,
         this.renderEngine.grid.cell_height,
-        "orange"
+        this.liveCellColor
       );
     });
 
@@ -141,7 +145,7 @@ export default class GameEngine {
         cell.row * this.renderEngine.grid.cell_height,
         this.renderEngine.grid.cell_width,
         this.renderEngine.grid.cell_height,
-        "black"
+        this.deadCellColor
       );
     });
 
@@ -201,7 +205,7 @@ export default class GameEngine {
     const speedLabel = document.getElementById("speedLabel");
     document.getElementById("speedRange").addEventListener("change", (e) => {
       // change the speed of the game
-      this.gameSpeed = e.target.value * 10;
+      this.gameSpeed = (10 - e.target.value) * 10;
       // update the speed label
       speedLabel.innerText = `x${e.target.value}`;
       // clear the interval
@@ -210,9 +214,9 @@ export default class GameEngine {
       this.run();
     });
 
-    document.getElementById("zoom").oninput = (e) => {
-      this.zoom(1 - e.target.value / 10);
-    };
+    // document.getElementById("zoom").oninput = (e) => {
+    //   this.zoom(1 - e.target.value / 10);
+    // };
 
     document.getElementById("clear").addEventListener("click", () => {
       // clear the interval
@@ -223,7 +227,7 @@ export default class GameEngine {
       this.updateStats();
 
       // render the objects
-      this.renderEngine.resetCanvas(this.is_grid);
+      this.renderEngine.resetCanvas(this.is_grid, this.deadCellColor);
       this.puase();
     });
 
@@ -234,7 +238,7 @@ export default class GameEngine {
     const gridInput = document.getElementById("grid");
     gridInput.addEventListener("change", (e) => {
       this.is_grid = e.target.checked;
-      this.renderEngine.resetCanvas(this.is_grid);
+      this.renderEngine.resetCanvas(this.is_grid, this.deadCellColor);
       this.renderObjects("adding");
     });
 
@@ -255,6 +259,17 @@ export default class GameEngine {
       // add the selected pattern to the grid
       this.addSelectedPattern(e.target.value);
     });
+
+    // set the color picker events
+    document.getElementById("cell-color").addEventListener("change", (e) => {
+      this.liveCellColor = e.target.value;
+      // redraw the objects
+      this.gameModel.renderModel(this.renderEngine, this.liveCellColor);
+    });
+
+    // document.getElementById("dead-color").addEventListener("change", (e) => {
+    //   this.deadCellColor = e.target.value;
+    // });
 
     // handle the canvas events
     this.handleCanvasEvents();
@@ -363,7 +378,7 @@ export default class GameEngine {
 
   zoom(value) {
     this.renderEngine.grid.zoom(value);
-    this.renderEngine.resetCanvas(this.is_grid);
+    this.renderEngine.resetCanvas(this.is_grid, this.deadCellColor);
     this.renderObjects();
   }
 
@@ -393,7 +408,7 @@ export default class GameEngine {
       this.gameModel.addCell(row, col);
     }
 
-    this.renderEngine.resetCanvas(this.is_grid); // render the grid on the canvas
+    this.renderEngine.resetCanvas(this.is_grid, this.deadCellColor); // render the grid on the canvas
     this.renderObjects("adding"); // render object on the canvas
     this.updateStats(); // update the status of the game
   }
@@ -485,7 +500,9 @@ export default class GameEngine {
       );
 
       // render the grid
-      this.renderEngine.grid.render(this.renderEngine);
+      if (this.is_grid) {
+        this.renderEngine.grid.render(this.renderEngine);
+      }
     }
 
     this.renderEngine.drawRect(

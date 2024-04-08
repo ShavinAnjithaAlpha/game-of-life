@@ -52,6 +52,15 @@
       </select>
       <!-- add new pattern  -->
       <button id="addPattern">Add Pattern</button>
+
+      <!-- color picker for pick colors for the cells -->
+      <div class="color-box">
+        <label for="color">Live Cell Color</label>
+        <input type="color" id="cell-color" value="#ffa500" />
+        <!-- 
+        <label for="color">Dead Cell Color</label>
+        <input type="color" id="dead-color" value="#000000" /> -->
+      </div>
     </div>
     <div
       style="width: 100vw; height: 75vh; overflow: auto; scrollbar-width: 0"
@@ -71,8 +80,8 @@
           <input type="range" id="speedRange" min="1" max="10" value="5" />
           <label for="speedRange" id="speedLabel">x5</label>
 
-          <label for="zoom">Zoom</label>
-          <input type="range" id="zoom" min="1" max="10" value="1" />
+          <!-- <label for="zoom">Zoom</label>
+          <input type="range" id="zoom" min="1" max="10" value="1" /> -->
         </div>
 
         <div class="btn-bar">
@@ -88,15 +97,15 @@
           <label for="grid">Grid</label>
           <!-- check box for get the input from the canvas -->
           <input type="checkbox" id="getInput" />
-          <label for="getInput">Get Input</label>
+          <label for="getInput">Add Cells</label>
           <!-- // check box for eraser -->
           <input type="checkbox" id="eraser" />
-          <label for="erase">Erase</label>
-        </div>
+          <label for="erase">Erase Cells</label>
 
-        <!-- // check box for eraser -->
-        <input type="checkbox" id="graph-checkbox" />
-        <label for="plot">Graph</label>
+          <!-- // check box for graph -->
+          <input type="checkbox" id="graph-checkbox" />
+          <label for="plot">Graph</label>
+        </div>
       </div>
 
       <div class="stat-panel">
