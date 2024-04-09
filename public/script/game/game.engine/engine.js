@@ -15,10 +15,10 @@ export default class GameEngine {
     this.deadCellColor = "black";
 
     this.handleEvents();
-    this.initialize();
+    // this.initialize();
     this.initializePlot();
 
-    this.prevHightlightedCell = null;
+    this.prevHightlightedArea = null;
   }
 
   initialize() {
@@ -300,7 +300,7 @@ export default class GameEngine {
       }
 
       if (this.pattern_selected !== null) {
-        this.showCurrentCellHighlighted(e);
+        this.showCurrentCellsHighlighted(e);
       }
     });
 
@@ -480,39 +480,134 @@ export default class GameEngine {
     this.prevHightlightedCell = null;
   }
 
-  showCurrentCellHighlighted(e) {
-    // determine the cell to be added
+  showCurrentCellsHighlighted(e) {
+    // determine the offset cell to be added
     const x = e.offsetX;
     const y = e.offsetY;
 
     // calculate the row and column of the cell
-    const row = Math.floor(y / this.renderEngine.grid.cell_height);
-    const col = Math.floor(x / this.renderEngine.grid.cell_width);
+    const offsetRow = Math.floor(y / this.renderEngine.grid.cell_height);
+    const offsetCol = Math.floor(x / this.renderEngine.grid.cell_width);
 
-    if (this.prevHightlightedCell) {
-      // erase the previous hightlighted cell
-
-      this.renderEngine.clearRect(
-        this.prevHightlightedCell.col * this.renderEngine.grid.cell_width,
-        this.prevHightlightedCell.row * this.renderEngine.grid.cell_height,
-        this.renderEngine.grid.cell_width,
-        this.renderEngine.grid.cell_height
-      );
-
-      // render the grid
-      if (this.is_grid) {
-        this.renderEngine.grid.render(this.renderEngine);
-      }
-    }
-
-    this.renderEngine.drawRect(
-      col * this.renderEngine.grid.cell_width,
-      row * this.renderEngine.grid.cell_height,
-      this.renderEngine.grid.cell_width,
-      this.renderEngine.grid.cell_height,
-      "limegreen"
+    // get the coverage area of the pattern
+    const { row, col, width, height } = this.getCoverageAreaOfPattern(
+      this.pattern_selected,
+      offsetCol,
+      offsetRow
     );
 
-    this.prevHightlightedCell = { row, col };
+    if (this.prevHightlightedArea) {
+      // clear the previous hightlighted cells
+      this.renderGridArea(
+        this.prevHightlightedArea.row,
+        this.prevHightlightedArea.col,
+        this.prevHightlightedArea.width,
+        this.prevHightlightedArea.height
+      );
+    }
+
+    // first check whether is there are any living cells in the area
+    if (this.isObjectinArea(row, col, width, height)) return;
+
+    // render the grid area with selected pattern
+    this.pattern_selected.forEach((cell) => {
+      this.renderEngine.drawRect(
+        (cell[1] + offsetCol) * this.renderEngine.grid.cell_width,
+        (cell[0] + offsetRow) * this.renderEngine.grid.cell_height,
+        this.renderEngine.grid.cell_width,
+        this.renderEngine.grid.cell_height,
+        "limegreen"
+      );
+
+      // draw the grid lines also
+      this.renderEngine.drawVerticalFullLine(
+        (cell[1] + offsetCol) * this.renderEngine.grid.cell_width,
+        "rgb(40, 40, 40)"
+      );
+
+      this.renderEngine.drawHorizontalFullLine(
+        (cell[0] + offsetRow) * this.renderEngine.grid.cell_height,
+        "rgb(40, 40, 40)"
+      );
+    });
+
+    this.prevHightlightedArea = { row, col, width, height };
+  }
+
+  // to render a part of the grid specified by the row and column
+  renderGridArea(row, col, width, height) {
+    // first clear the specified area from the canvas
+    this.renderEngine.clearRect(
+      col * this.renderEngine.grid.cell_width,
+      row * this.renderEngine.grid.cell_height,
+      width * this.renderEngine.grid.cell_width,
+      height * this.renderEngine.grid.cell_height
+    );
+
+    // now draw the grid lines belongs to that area as horizontal and vertical lines
+    // draw the horizontal lines
+    for (let i = row; i < row + height; i++) {
+      this.renderEngine.drawHorizontalFullLine(
+        i * this.renderEngine.grid.cell_height,
+        "rgb(40, 40, 40)"
+      );
+    }
+    // draw the vertical lines
+    for (let j = col; j < col + width; j++) {
+      this.renderEngine.drawVerticalFullLine(
+        j * this.renderEngine.grid.cell_width,
+        "rgb(40, 40, 40)"
+      );
+    }
+
+    // now render the game model's object that covers that area
+    for (let i = row; i < row + height; i++) {
+      for (let j = col; j < col + width; j++) {
+        const cell = this.gameModel.get(i, j);
+        if (cell !== undefined) {
+          this.renderEngine.drawRect(
+            j * this.renderEngine.grid.cell_width,
+            i * this.renderEngine.grid.cell_height,
+            this.renderEngine.grid.cell_width,
+            this.renderEngine.grid.cell_height,
+            this.liveCellColor
+          );
+        }
+      }
+    }
+  }
+
+  isObjectinArea(row, col, width, height) {
+    for (let i = row; i < row + height; i++) {
+      for (let j = col; j < col + width; j++) {
+        if (this.gameModel.get(i, j) !== undefined) return true;
+      }
+    }
+    return false;
+  }
+
+  // get the pattern covererd rectangle area as {rw, col ,width, height} from cell pattern
+  getCoverageAreaOfPattern(pattern, offsetX, offsetY) {
+    let minRow = Infinity;
+    let minCol = Infinity;
+    let maxRow = -Infinity;
+    let maxCol = -Infinity;
+
+    pattern.forEach((cell) => {
+      const row = cell[0] + offsetY;
+      const col = cell[1] + offsetX;
+
+      if (row < minRow) minRow = row;
+      if (col < minCol) minCol = col;
+      if (row > maxRow) maxRow = row;
+      if (col > maxCol) maxCol = col;
+    });
+
+    return {
+      row: minRow,
+      col: minCol,
+      width: maxCol - minCol + 1,
+      height: maxRow - minRow + 1,
+    };
   }
 }
