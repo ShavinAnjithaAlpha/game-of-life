@@ -15,7 +15,7 @@ export default class GameEngine {
     this.deadCellColor = "black";
 
     this.handleEvents();
-    this.initialize();
+    // this.initialize();
     this.initializePlot();
 
     this.prevHightlightedArea = null;
