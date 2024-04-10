@@ -37,6 +37,11 @@ html {
   margin-right: 50px;
 }
 
+.menu h1 sup {
+  font-size: 1.4rem;
+  color: limegreen;
+}
+
 .menu select {
   padding: 5px 10px;
   border: 1px solid #ccc;
@@ -96,6 +101,43 @@ html {
   margin: 0 10px;
 }
 
+.menu .nav {
+  display: flex;
+  flex-direction: row;
+  justify-content: flex-end;
+  align-items: center;
+  margin: 0;
+  justify-self: flex-end;
+  width: 35%;
+}
+
+.menu .nav a {
+  padding: 5px 10px;
+  color: white;
+  font-size: 1.4rem;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.3 all ease;
+  margin: 0px 10px;
+  text-decoration: none;
+  transition: all 0.3s ease;
+}
+
+.menu .nav a:hover {
+  color: lime;
+}
+
+.menu .nav a#contact-form {
+  background-color: transparent;
+  color: white;
+  border: 2px solid limegreen;
+}
+
+.menu .nav a#contact-form:hover {
+  background-color: limegreen;
+  color: black;
+}
+
 .panel {
   display: flex;
   flex-direction: column;
@@ -125,7 +167,7 @@ html {
 
 .control-panel button {
   margin: 0 10px;
-  padding: 10px 15px;
+  padding: 5px 15px;
   background-color: rgb(16, 81, 145);
   color: white;
   font-weight: 500;
@@ -133,7 +175,7 @@ html {
   border: none;
   border-radius: 5px;
   cursor: pointer;
-  transition: 0.3 all ease;
+  transition: all 0.2s ease;
 }
 
 .control-panel button:hover {
@@ -160,6 +202,20 @@ html {
   padding: 10px 15px;
   border: 1px solid #555;
   border-radius: 5px;
+}
+
+.control-panel input[type="checkbox"] {
+  margin: 0 5px;
+  padding: 10px 15px;
+  font-weight: 700;
+  border: 1px solid #555;
+  border-radius: 5px;
+  font-size: 1.4rem;
+  background-color: #333;
+}
+
+.control-panel .checkbox-bar label {
+  margin-right: 15px;
 }
 
 .control-panel .slider-box {

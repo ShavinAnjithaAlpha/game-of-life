@@ -44,14 +44,14 @@
   </head>
   <body>
     <div class="menu">
-      <h1>Conway's Game of Life</h1>
+      <h1>Conway's Game of Life <sup>[Beta]</sup></h1>
       <!-- option box for select predefined patterns -->
       <label for="pattern">Choose Pattern</label>
       <select id="pattern">
         <option value="none">None</option>
       </select>
       <!-- add new pattern  -->
-      <button id="addPattern">Add Pattern</button>
+      <button id="addPattern" disabled>Add Pattern</button>
 
       <!-- color picker for pick colors for the cells -->
       <div class="color-box">
@@ -60,6 +60,12 @@
         <!-- 
         <label for="color">Dead Cell Color</label>
         <input type="color" id="dead-color" value="#000000" /> -->
+      </div>
+
+      <div class="nav">
+        <a href="#">About Game of Life</a>
+        <a href="#">Help</a>
+        <a href="#" id="contact-form">Contact</a>
       </div>
     </div>
     <div
@@ -85,26 +91,38 @@
         </div>
 
         <div class="btn-bar">
-          <button id="play">Play</button>
-          <button id="pause">Pause</button>
-          <button id="step">Step</button>
-          <button id="clear">Clear</button>
+          <button id="play">
+            <img src="/assets/img/play.svg" alt="play" width="20" />
+          </button>
+          <button id="pause">
+            <img src="/assets/img/pause.svg" alt="pause" width="20" />
+          </button>
+          <button id="step">
+            <img src="/assets/img/next.svg" alt="next" width="20" />
+          </button>
+          <button id="clear">
+            <img src="/assets/img/remove.svg" alt="remove" width="20" />
+          </button>
           <button id="random">Random</button>
         </div>
 
         <div class="checkbox-bar">
           <input type="checkbox" id="grid" checked />
-          <label for="grid">Grid</label>
+          <img src="/assets/img/grid.svg" alt="grid" width="20" />
+          <label for="grid"> Grid </label>
           <!-- check box for get the input from the canvas -->
           <input type="checkbox" id="getInput" />
-          <label for="getInput">Add Cells</label>
+          <img src="/assets/img/draw.svg" alt="draw" width="20" />
+          <label for="getInput">Draw Cells </label>
           <!-- // check box for eraser -->
           <input type="checkbox" id="eraser" />
-          <label for="erase">Erase Cells</label>
+          <img src="/assets/img/eraser.svg" alt="eraser" width="20" />
+          <label for="erase">Erase Cells </label>
 
           <!-- // check box for graph -->
           <input type="checkbox" id="graph-checkbox" />
-          <label for="plot">Graph</label>
+          <img src="/assets/img/graph.svg" alt="remove" width="20" />
+          <label for="plot">Plot </label>
         </div>
       </div>
 
