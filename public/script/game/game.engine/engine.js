@@ -525,19 +525,21 @@ export default class GameEngine {
         "limegreen"
       );
 
-      this.renderEngine.drawVerticalLine(
-        (cell[1] + offsetCol) * this.renderEngine.grid.cell_width,
-        (cell[0] + offsetRow) * this.renderEngine.grid.cell_height,
-        (cell[0] + offsetRow + 1) * this.renderEngine.grid.cell_height,
-        this.gridLineColor
-      );
+      if (this.is_grid) {
+        this.renderEngine.drawVerticalLine(
+          (cell[1] + offsetCol) * this.renderEngine.grid.cell_width,
+          (cell[0] + offsetRow) * this.renderEngine.grid.cell_height,
+          (cell[0] + offsetRow + 1) * this.renderEngine.grid.cell_height,
+          this.gridLineColor
+        );
 
-      this.renderEngine.drawHorizontalLine(
-        (cell[0] + offsetRow) * this.renderEngine.grid.cell_height,
-        (cell[1] + offsetCol) * this.renderEngine.grid.cell_width,
-        (cell[1] + offsetCol + 1) * this.renderEngine.grid.cell_width,
-        this.gridLineColor
-      );
+        this.renderEngine.drawHorizontalLine(
+          (cell[0] + offsetRow) * this.renderEngine.grid.cell_height,
+          (cell[1] + offsetCol) * this.renderEngine.grid.cell_width,
+          (cell[1] + offsetCol + 1) * this.renderEngine.grid.cell_width,
+          this.gridLineColor
+        );
+      }
     });
 
     this.prevHightlightedArea = { row, col, width, height };
@@ -555,24 +557,25 @@ export default class GameEngine {
 
     // now draw the grid lines belongs to that area as horizontal and vertical lines
     // draw the horizontal lines
-    for (let i = row; i < row + height; i++) {
-      this.renderEngine.drawHorizontalLine(
-        col * this.renderEngine.grid.cell_width,
-        (col + width) * this.renderEngine.grid.cell_width,
-        i * this.renderEngine.grid.cell_height,
-        this.gridLineColor
-      );
+    if (this.is_grid) {
+      for (let i = row; i < row + height; i++) {
+        this.renderEngine.drawHorizontalLine(
+          col * this.renderEngine.grid.cell_width,
+          (col + width) * this.renderEngine.grid.cell_width,
+          i * this.renderEngine.grid.cell_height,
+          this.gridLineColor
+        );
+      }
+      // draw the vertical lines
+      for (let j = col; j < col + width; j++) {
+        this.renderEngine.drawVerticalLine(
+          j * this.renderEngine.grid.cell_width,
+          row * this.renderEngine.grid.cell_height,
+          (row + height) * this.renderEngine.grid.cell_height,
+          this.gridLineColor
+        );
+      }
     }
-    // draw the vertical lines
-    for (let j = col; j < col + width; j++) {
-      this.renderEngine.drawVerticalLine(
-        j * this.renderEngine.grid.cell_width,
-        row * this.renderEngine.grid.cell_height,
-        (row + height) * this.renderEngine.grid.cell_height,
-        this.gridLineColor
-      );
-    }
-
     // now render the game model's object that covers that area
     for (let i = row; i < row + height; i++) {
       for (let j = col; j < col + width; j++) {
