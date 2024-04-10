@@ -10,9 +10,11 @@ export default class GameEngine {
     this.is_plot = false;
     this.pattern_selected = null;
     this.gameSpeed = 50;
+    this.randomCellDensity = 0.5;
     // color values of the game of life
     this.liveCellColor = "orange";
     this.deadCellColor = "black";
+    this.gridLineColor = "rgb(40, 40, 40)";
 
     this.handleEvents();
     // this.initialize();
@@ -384,33 +386,37 @@ export default class GameEngine {
 
   // function to randomly generate the living cells
   random() {
-    // clear the interval
-    clearInterval(this.intervalId);
-    // clear the living cells
-    this.gameModel.living_cells.clear();
-    this.gameModel.generation = 0; // reste the geneation to 0
-
+    const randomWidth = Math.floor(
+      (Math.random() * this.renderEngine.grid.horizontal_cell_number) / 10
+    );
+    const randomHeight = Math.floor(
+      (Math.random() * this.renderEngine.grid.vertical_cell_number) / 10
+    );
     // get the number of cells to be generated
-    const n = Math.floor(Math.random() * 100);
+    const n = Math.floor(randomWidth * randomHeight * this.randomCellDensity);
 
-    const leftLimit = Math.floor(
-      Math.random() * this.renderEngine.grid.horizontal_cell_number
-    );
-    const topLimit = Math.floor(
-      Math.random() * this.renderEngine.grid.vertical_cell_number
-    );
-
+    const cells = [];
     // generate the cells
+    const maximumIterations = 50000;
+    let k = 0;
     for (let i = 0; i < n; i++) {
-      const row = Math.floor(Math.random() * 20) + topLimit;
-      const col = Math.floor(Math.random() * 20) + leftLimit;
+      const row = Math.floor(Math.random() * randomHeight);
+      const col = Math.floor(Math.random() * randomWidth);
 
-      this.gameModel.addCell(row, col);
+      k++;
+      if (k > maximumIterations) break;
+      if (cells.includes([row, col])) {
+        i--;
+        continue;
+      } // continue if the cell is already generated
+
+      cells.push([row, col]);
     }
-
-    this.renderEngine.resetCanvas(this.is_grid, this.deadCellColor); // render the grid on the canvas
-    this.renderObjects("adding"); // render object on the canvas
-    this.updateStats(); // update the status of the game
+    // this.renderEngine.resetCanvas(this.is_grid, this.deadCellColor); // render the grid on the canvas
+    // this.renderObjects("adding"); // render object on the canvas
+    // this.updateStats(); // update the status of the game
+    // set the selected pattern as the generated random pattern cell
+    this.pattern_selected = cells;
   }
 
   updateStats() {
@@ -519,15 +525,18 @@ export default class GameEngine {
         "limegreen"
       );
 
-      // draw the grid lines also
-      this.renderEngine.drawVerticalFullLine(
+      this.renderEngine.drawVerticalLine(
         (cell[1] + offsetCol) * this.renderEngine.grid.cell_width,
-        "rgb(40, 40, 40)"
+        (cell[0] + offsetRow) * this.renderEngine.grid.cell_height,
+        (cell[0] + offsetRow + 1) * this.renderEngine.grid.cell_height,
+        this.gridLineColor
       );
 
-      this.renderEngine.drawHorizontalFullLine(
+      this.renderEngine.drawHorizontalLine(
         (cell[0] + offsetRow) * this.renderEngine.grid.cell_height,
-        "rgb(40, 40, 40)"
+        (cell[1] + offsetCol) * this.renderEngine.grid.cell_width,
+        (cell[1] + offsetCol + 1) * this.renderEngine.grid.cell_width,
+        this.gridLineColor
       );
     });
 
@@ -547,16 +556,20 @@ export default class GameEngine {
     // now draw the grid lines belongs to that area as horizontal and vertical lines
     // draw the horizontal lines
     for (let i = row; i < row + height; i++) {
-      this.renderEngine.drawHorizontalFullLine(
+      this.renderEngine.drawHorizontalLine(
+        col * this.renderEngine.grid.cell_width,
+        (col + width) * this.renderEngine.grid.cell_width,
         i * this.renderEngine.grid.cell_height,
-        "rgb(40, 40, 40)"
+        this.gridLineColor
       );
     }
     // draw the vertical lines
     for (let j = col; j < col + width; j++) {
-      this.renderEngine.drawVerticalFullLine(
+      this.renderEngine.drawVerticalLine(
         j * this.renderEngine.grid.cell_width,
-        "rgb(40, 40, 40)"
+        row * this.renderEngine.grid.cell_height,
+        (row + height) * this.renderEngine.grid.cell_height,
+        this.gridLineColor
       );
     }
 

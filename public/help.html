@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Help</title>
+  </head>
+  <body>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: "Roboto", sans-serif;
+        background-image: url("assets/img/game-ss-1.png");
+        background-size: cover;
+        background-position: center;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-attachment: fixed;
+      }
+
+      ::-webkit-scrollbar {
+        display: none;
+      }
+
+      .body-wrapper {
+        backdrop-filter: blur(5px) brightness(0.5);
+        padding: 20px 40px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        width: 60%;
+        height: 100%;
+      }
+
+      h1 {
+        font-size: 2rem;
+        margin-bottom: 10px;
+        color: limegreen;
+      }
+
+      h2 {
+        font-size: 1.5rem;
+        margin-top: 20px;
+        margin-bottom: 10px;
+        color: dodgerblue;
+      }
+
+      p {
+        margin: 10px;
+        color: #ffffffee;
+        word-spacing: 4px;
+        line-height: 1.2;
+        font-size: 1.1rem;
+      }
+
+      ul {
+        margin: 20px;
+      }
+
+      li {
+        margin-bottom: 10px;
+        color: #ffffffee;
+        font-size: 1.1rem;
+      }
+
+      img {
+        margin: 5px 20px;
+      }
+    </style>
+    <div class="body-wrapper">
+      <h1>How to use the Simulation</h1>
+
+      <img src="assets/img/full.png" alt="full game" width="100%" />
+      <p>
+        Conway's Game of Life is a cellular automaton devised by the British
+        mathematician John Horton Conway in 1970. It is a zero-player game,
+        meaning that its evolution is determined by its initial state, requiring
+        no further input. One interacts with the Game of Life by creating an
+        initial configuration and observing how it evolves.
+      </p>
+
+      <h2>Rules</h2>
+      <p>
+        The universe of the Game of Life is an infinite, two-dimensional
+        orthogonal grid of square cells, each of which is in one of two possible
+        states, live or dead. Every cell interacts with its eight neighbours,
+        which are the cells that are horizontally, vertically, or diagonally
+        adjacent. At each step in time, the following transitions occur:
+      </p>
+      <ul>
+        <li>
+          Any live cell with fewer than two live neighbours dies, as if by
+          underpopulation.
+        </li>
+        <li>
+          Any live cell with two or three live neighbours lives on to the next
+          generation.
+        </li>
+        <li>
+          Any live cell with more than three live neighbours dies, as if by
+          overpopulation.
+        </li>
+        <li>
+          Any dead cell with exactly three live neighbours becomes a live cell,
+          as if by reproduction.
+        </li>
+      </ul>
+
+      <h2>Controls</h2>
+      <img src="assets/img/controls.png" alt="controllers " width="100%" />
+      <ul>
+        <li><strong>Start</strong> - Start the simulation.</li>
+        <li><strong>Stop</strong> - Stop the simulation.</li>
+        <li><strong>Clear</strong> - Clear the grid.</li>
+        <li><strong>Random</strong> - Fill the grid with random cells.</li>
+        <li><strong>Speed</strong> - Change the speed of the simulation.</li>
+        <li><strong>Color</strong> - Change the color of the live cells.</li>
+        <li><strong>Choose Pattern</strong> - Choose a predefined pattern.</li>
+        <li>
+          <strong>Add Pattern</strong> - Add a new pattern (not yet support)
+        </li>
+      </ul>
+
+      <h2>Inputs</h2>
+      <img src="assets/img/inputs.png" alt="inputs" width="100%" />
+      <ul>
+        <li><strong>Grid</strong> - Show/Hide game's grid world</li>
+        <li>
+          <strong>Draw Cells</strong> - Add more living cells to the game by
+          clicking in the canvas or dragging in the canvas
+        </li>
+        <li>
+          <strong>Erase Cells</strong> - Remove living cells of the game by
+          clicking on them or dragging on them
+        </li>
+        <li>
+          <strong>Plot</strong> - Show the informations about game evolution
+          like population, toggle deaths, toggle births
+        </li>
+      </ul>
+
+      <h2>Info Panel</h2>
+      <img src="assets/img/stats.png" alt="stats" width="100%" />
+      <ul>
+        <li>
+          <strong>X label</strong> - show X coordinate of the grid world in real
+          time
+        </li>
+        <li>
+          <strong>Y label</strong> - show Y coordinate of the grid world in real
+          time
+        </li>
+        <li>
+          <strong>Status label</strong> - show whether the current cell is live
+          or dead
+        </li>
+
+        <li>
+          <strong>Generation label</strong> - show how many generations are
+          evolved in the game's simulation.
+        </li>
+        <li>
+          <strong>Living Cell label</strong> - Show current number of living
+          cell in the game's simulation
+        </li>
+        <li>
+          <strong>Dead Cell label</strong> - Show current number of dead cells
+          in the game's simulation
+        </li>
+      </ul>
+
+      <img src="assets/img/plot.png" alt="plot" width="100%" />
+    </div>
+  </body>
+</html>

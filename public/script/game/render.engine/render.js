@@ -58,6 +58,14 @@ class RenderEngine {
     this.drawLine(0, y, this.canvasElement.width, y, color);
   }
 
+  drawHorizontalLine(x1, x2, y, color) {
+    this.drawLine(x1, y, x2, y, color);
+  }
+
+  drawVerticalLine(x, y1, y2, color) {
+    this.drawLine(x, y1, x, y2, color);
+  }
+
   drawRect(x, y, width, height, color) {
     this.canvas.fillStyle = color;
     this.canvas.fillRect(x, y, width, height);
