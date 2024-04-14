@@ -99,6 +99,7 @@ This project is a web-based version of the game of life, running entirely on the
 The game is consists of three main components.
 
 1. **The Game Engine**
+   
    The game engine is responsible for the core logic of the game. It is responsible for managing other major components of the game and maintain consistent communication betweenn those components. Some of the task of the game engine are:
 
    - Initialize the game
@@ -109,14 +110,15 @@ The game is consists of three main components.
    - Handle the game loop
    - Handle the game state transitions
 
-2. **The Game Model**
+3. **The Game Model**
+   
    The game model is in charge of keeping track of the entire state of the game as an abstract mathematical model. Its core functionality makes use of a custom hash map implementation to rapidly store and retrieve the game's cell states.
 
-3. **2D Rendering Engine**
+5. **2D Rendering Engine**
 
    The 2D rendering engine is in charge of drawing the game state on the canvas at a low level. It utilizes the HTML5 Canvas API to draw the game state on the canvas. The rendering engine is responsible for drawing the cells, grid, and other game elements on the canvas.
 
-4. **Grid System**
+6. **Grid System**
 
    The grid system acts as a bridge between the abstract game model and the rendering engine by providing a structured, standardized representation of the game world. The game engine utilizes the grid system to accurately reflect the game model on the canvas, allowing the rendering engine to create a visual representation of the game that is true to the underlying data.
 
