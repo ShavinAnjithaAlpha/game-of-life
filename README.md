@@ -53,11 +53,13 @@
 
 ## About The Project
 
+![image](https://github.com/ShavinAnjithaAlpha/game-of-life/assets/85817726/559e1272-70f4-4cab-b82a-c9f480edabd3)
+
 #### **Official Website: [gol.shavin.live](http://gol.shavin.live/)**
 
 ### About the game of life
 
-![Game of Life Demo](https://upload.wikimedia.org/wikipedia/commons/e/ec/Conways_game_of_life_breeder.png))
+![Game of Life Demo](https://upload.wikimedia.org/wikipedia/commons/e/ec/Conways_game_of_life_breeder.png)
 
 The Game of Life, also known as Life, is a cellular automaton that was created by British mathematician John Horton Conway in 1970. It is a zero-player game, which means that its evolution is determined by its initial state and requires no further input. To interact with the game of life, one creates an initial configuration and observes how it evolves. It is Turing complete and capable of simulating a universal constructor or any other Turing machine.
 
@@ -84,6 +86,11 @@ From variety of patterns generated in the game of life, there are some patterns 
 - Wickstretchers: Patterns that leave behind a trail of oscillators.
 - Breeders: Patterns that leave behind a trail of spaceships.
 - Agars: Patterns that grow indefinitely.
+
+  ![image](https://github.com/ShavinAnjithaAlpha/game-of-life/assets/85817726/219d50f1-c374-46fb-8ff1-3db623e57ff4)    ![image](https://github.com/ShavinAnjithaAlpha/game-of-life/assets/85817726/66313bd7-b211-4a88-9050-7542e8c32cb5)     ![image](https://github.com/ShavinAnjithaAlpha/game-of-life/assets/85817726/d595a30d-72cc-4797-8e8b-a63ee0903833)
+
+
+
 
 ### Design and Implementation of the project
 
@@ -186,6 +193,13 @@ To get a local copy up and running follow these simple steps.
 <!-- USAGE EXAMPLES -->
 
 ## Usage
+
+![image](https://github.com/ShavinAnjithaAlpha/game-of-life/assets/85817726/edd47be3-dd4b-464c-ae30-4e564c0d8dad)
+![image](https://github.com/ShavinAnjithaAlpha/game-of-life/assets/85817726/478cc648-fa6d-478f-89a5-a59a8e95b221)
+![image](https://github.com/ShavinAnjithaAlpha/game-of-life/assets/85817726/2ef21154-3be1-48a8-8dfb-9361ea0f8bd8)
+![image](https://github.com/ShavinAnjithaAlpha/game-of-life/assets/85817726/b44623b4-2d45-4243-a4b4-46e3d4b44c25)
+![image](https://github.com/ShavinAnjithaAlpha/game-of-life/assets/85817726/76049008-eff7-4bee-a90a-dcd94a20e211)
+
 
 The game of life is a zero-player game, which means that its evolution is determined by its initial state and requires no further input. To interact with the game of life, one creates an initial configuration and observes how it evolves. The game of life has a few controls that can be used to interact with the game.
 
